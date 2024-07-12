@@ -1,0 +1,63 @@
+{% extends 'padre/base.html' %}
+
+{% block title %}Pinturas-locales{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="p-2 mb-1 bg-light text-black text-center">
+        <h1 class="text-center">HERRAMIENTAS MANUALES</h1>
+    </div>
+    <div class="row justify-content-center mb-4 m-4">
+        {% for producto in productos %}
+        <div class="col-md-3 p-3 mb-4 m-4">
+            <div class="card" style="width: 18rem;">
+                <img src="{% static producto.imagen.url %}" class="card-img-top" alt="{{ producto.nombre }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">PRECIO : ${{ producto.precio }}</p>
+                    <button class="btn btn-info agregar-al-carrito" data-id="{{ producto.id }}">
+                        <i class="fas fa-cart-plus"></i> Agregar al Carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.agregar-al-carrito').forEach(button => {
+          button.addEventListener('click', function() {
+              const productoId = this.getAttribute('data-id');
+              fetch(`/agregar/${productoId}/`, {
+                  method: 'GET',
+                  headers: {
+                      'X-Requested-With': 'XMLHttpRequest'
+                  }
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.status === 'success') {
+                      // Actualizar contador del carrito
+                      const carritoCount = document.querySelector('#carrito-count');
+                      if (carritoCount) {
+                          carritoCount.textContent = parseInt(carritoCount.textContent) + 1;
+                      }
+                      // Mostrar mensaje o realizar otra acción visual si es necesario
+                      console.log('Producto agregado al carrito');
+                  } else {
+                      alert('Hubo un error al agregar el producto al carrito');
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  alert('Hubo un error al agregar el producto al carrito');
+              });
+          });
+      });
+  });
+</script>
+
+{% endblock %}

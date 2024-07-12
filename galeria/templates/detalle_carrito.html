@@ -1,0 +1,49 @@
+{% extends 'padre/base.html' %}
+
+{% block title %}Carrito de Compras{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center mb-4 text-white">Carrito de Compras</h1>
+            <div class="table-responsive">
+                <table class="table table-striped text-white">
+                    <thead>
+                        <tr>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for elemento in carrito.elementos.all %}
+                        <tr>
+                            <td class="text-white">{{ elemento.producto.nombre }}</td>
+                            <td class="text-white">${{ elemento.producto.precio }}</td>
+                            <td class="text-white">{{ elemento.cantidad }}</td>
+                            <td class="text-white">${{ elemento.precio_total }}</td>
+                            <td>
+                                <a href="{% url 'eliminar_del_carrito' elemento.producto.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                            <td class="text-white"><strong>${{ carrito.obtener_total }}</strong></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-4">
+                <a href="{% url 'galeria' %}" class="btn btn-primary">Seguir Comprando</a>
+                <a href="{% url 'pago_paypal' %}" class="btn btn-success">Pagar con PayPal</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
